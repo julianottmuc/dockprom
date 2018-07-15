@@ -117,21 +117,14 @@ services:
     labels:
       org.label-schema.group: "monitoring"
 
-  caddy:
-    image: stefanprodan/caddy
-    container_name: caddy
-    ports:
-      - "3000:3000"
-      - "9090:9090"
-      - "9093:9093"
-      - "9091:9091"
-    volumes:
-      - ./caddy/:/etc/caddy/
-    environment:
-      - ADMIN_USER=${ADMIN_USER:-admin}
-      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin}
+  proxy:
+    build:
+      context: nginx
+      args:
+        - ADMIN_USER=${ADMIN_USER}
+        - ADMIN_PASSWORD=${ADMIN_PASSWORD}
     restart: unless-stopped
+    ports:
+      - "80:80"
     networks:
       - monitor-net
-    labels:
-      org.label-schema.group: "monitoring"
